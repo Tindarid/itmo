@@ -1,0 +1,6 @@
+L -> VAR = E;  | E;
+E -> A | A + E | A - E
+A -> B | B * A | B / A
+B -> -B | (E) | VAR | NUMBER
+
+Только лево-рекурсивно

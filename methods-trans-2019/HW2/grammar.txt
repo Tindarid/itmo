@@ -1,0 +1,33 @@
+VAR = [a-z]
+eps = EOF
+
+Исходная:
+Expr -> Dis   | Dis xor Expr
+Dis  -> Con   | Con or Dis
+Con  -> Not   | Not and Con
+Not  -> VAR   | not Not      | (Expr)
+
+Устраним правое ветвление:
+Expr  -> Dis Expr'
+Expr' -> xor Expr | eps
+Dis   -> Con Dis'
+Dis'  -> or Dis   | eps
+Con   -> Not Con'
+Con'  -> and Con  | eps
+Not   -> VAR      | not Not | (Expr)
+
+-----------------------------------------
+|N     | First       | Follow
+-----------------------------------------
+|Expr  | VAR, not, ( | $, )
+|Expr' | xor, eps    | $, )
+|Dis   | VAR, not, ( | $, ), xor 
+|Dis'  | or,  eps    | $, ), xor
+|Con   | VAR, not, ( | $, ), xor, or
+|Con'  | and, eps    | $, ), xor, or
+|Not   | VAR, not, ( | $, ), xor, or, and
+-----------------------------------------
+
+Уберем (not not _):
+Not  -> Temp | not Temp
+Temp -> VAR  | (Expr)
