@@ -1,0 +1,10 @@
+resolver: lts-14.27
+
+packages:
+- hw2
+
+extra-deps: []
+
+flags: {}
+
+extra-package-dbs: []

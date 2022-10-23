@@ -1,0 +1,12 @@
+SolvedByT(TeamId, ContestId, Letter) :-
+  Runs(_, SessionId, Letter, _, Accepted),
+  Sessions(SessionId, TeamId, ContestId, _),
+  Accepted = 1.
+T(TeamId) :-
+  Teams(TeamId, _),
+  Problems(ContestId, Letter, _),
+  not SolvedByT(TeamId, ContestId, Letter),
+  SolvedByT(:TeamId, ContestId, Letter).
+NotT(TeamId) :-
+  Teams(TeamId, _),
+  not T(TeamId).

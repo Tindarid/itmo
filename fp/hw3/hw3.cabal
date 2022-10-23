@@ -1,0 +1,54 @@
+name:                hw3
+version:             0.1.0.0
+synopsis:            Synopsis for task 3
+description:         Task 3 for FP ITMO course
+
+homepage:            https://github.com/fp-ctd-itmo/hw3-Tindarid
+license:             MIT
+license-file:        LICENSE
+author:              Nursan Valeyev
+maintainer:          tindarid@gmail.com
+copyright:           2020 Nursan Valeyev
+
+category:            Web
+build-type:          Simple
+extra-source-files:  README.md
+cabal-version:       >=1.10
+tested-with:         GHC == 8.0.1
+
+library
+  hs-source-dirs:      src
+  exposed-modules:     Task1 Task5 Task6 Task7
+  ghc-options:         -Wall
+  build-depends:       base >= 4.9 && < 5
+                     , deepseq
+                     , directory
+                     , filepath
+                     , transformers
+                     , microlens
+  default-language:    Haskell2010
+
+benchmark hw3-bench
+  type:                exitcode-stdio-1.0
+  hs-source-dirs:      bench
+  main-is:             Benchmark.hs
+  build-depends:       base >= 4.9 && < 5
+                     , hw3
+                     , deepseq
+                     , criterion
+                     , random
+  ghc-options:         -Wall -Werror -threaded -rtsopts -with-rtsopts=-N
+  default-language:    Haskell2010
+
+test-suite hw3-test
+  type:                exitcode-stdio-1.0
+  hs-source-dirs:      test
+  main-is:             Spec.hs
+  build-depends:       base >= 4.9 && < 5
+                     , hw3
+                     , hspec >= 1.3
+                     , hspec-discover
+                     , QuickCheck
+  ghc-options:         -Wall -Werror
+  other-modules:       Task1Spec
+  default-language:    Haskell2010

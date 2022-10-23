@@ -1,0 +1,5 @@
+T(TeamName) :-
+  Runs(_, SessionId, :Letter, _, Accepted),
+  Sessions(SessionId, TeamId, :ContestId, _),
+  Teams(TeamId, TeamName),
+  Accepted = 1.

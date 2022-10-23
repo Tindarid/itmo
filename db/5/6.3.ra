@@ -1,0 +1,1 @@
+pi{StudentId} (Marks njoin (pi{CourseId} (Plan njoin sigma {LecturerName = :LecturerName} (Lecturers))))

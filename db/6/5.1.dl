@@ -1,0 +1,11 @@
+Passed(StudentId, CourseId) :-
+  Marks(StudentId, CourseId, Mark),
+  Mark >= 3.
+NotPassed(GroupId, CourseId) :-
+  Students(StudentId, _, GroupId),
+  Courses(CourseId, _),
+  not Passed(StudentId, CourseId).
+GC(GroupId, CourseId) :-
+  Groups(GroupId, _),
+  Courses(CourseId, _),
+  not NotPassed(GroupId, CourseId).

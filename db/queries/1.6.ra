@@ -1,0 +1,3 @@
+(pi {SessionId, ContestId, Letter} (Runs njoin Sessions))
+div
+(pi {ContestId, Letter} (Problems))

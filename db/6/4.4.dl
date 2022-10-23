@@ -1,0 +1,13 @@
+Teaching(GroupId, CourseId) :-
+  Lecturers(LecturerId, :LecturerName),
+  Plan(GroupId, CourseId, LecturerId).
+HaveMark(StudentId, CourseId) :-
+  Teaching(GroupId, CourseId),
+  Marks(StudentId, CourseId, _).
+NotHaveMark(StudentId) :-
+  Students(StudentId, _, GroupId),
+  Teaching(GroupId, CourseId),
+  not HaveMark(StudentId, CourseId).
+S(StudentId) :-
+  Students(StudentId, _, _),
+  not NotHaveMark(StudentId).

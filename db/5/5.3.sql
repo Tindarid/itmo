@@ -1,0 +1,1 @@
+select StudentName, CourseName from Students natural join Plan natural join Courses left outer join Marks on Students.StudentId = Marks.StudentId and Courses.CourseId = Marks.CourseId where (Mark is null or (Mark != 4 and Mark != 5))

@@ -1,0 +1,1 @@
+(pi {StudentId} (sigma{CourseId = :CourseId && Mark = :Mark} (Marks))) njoin Students

@@ -1,0 +1,415 @@
+###
+see 2.3, 3.2
+###
+
+##############
+section Данные
+##############
+
+data Students
+    StudentId, StudentName       , GroupId
+    1        , 'Иванов И.И.'     , 1
+    2        , 'Петров П.П.'     , 1
+    3        , 'Петров П.П.'     , 2
+    4        , 'Сидров С.С.'     , 2
+    5        , 'Неизвестный Н.Н.', 3
+    6        , 'Безымянный Б.Б'  , 4
+    7        , 'Иксов И.И'       , 2
+    8        , 'Игреков И.И'     , 2
+
+data Groups
+    GroupId, GroupName
+    1      , 'M3435'
+    2      , 'M3439'
+    3      , 'M3238'
+    4      , 'M3239'
+
+data Courses
+    CourseId, CourseName
+    1       , 'Базы данных'
+    2       , 'Управление проектами'
+    3       , 'ППО'
+    4       , 'Теория информации'
+    6       , 'Математический анализ'
+    7       , 'Технологии Java'
+
+data Lecturers
+    LecturerId, LecturerName
+    1         , 'Корнеев Г.А.'
+    2         , 'Шовкопляс Г.Ф.'
+    3         , 'Кузнецова Е.М.'
+    4         , 'Киракозов А.Х.'
+    5         , 'Якуба Н.В.'
+    6         , 'Трофимюк Г.А.'
+    7         , 'Кудряшов Б.Д.'
+    8         , 'Кохась К.П.'
+
+data Plan
+    GroupId, CourseId, LecturerId
+    1      , 1       , 2
+    2      , 1       , 1
+    1      , 2       , 3
+    1      , 3       , 4
+    2      , 3       , 4
+    1      , 4       , 5
+    2      , 4       , 6
+    1      , 4       , 7
+    2      , 4       , 7
+    4      , 6       , 8
+    1      , 7       , 1
+    2      , 7       , 1
+    3      , 7       , 1
+    4      , 7       , 1
+
+data Marks
+    StudentId, CourseId, Mark
+    1        , 1       , 5
+    2        , 1       , 4
+    3        , 1       , 3
+    2        , 2       , 3
+    3        , 2       , 4
+    4        , 2       , 5
+    7        , 1       , 5
+    8        , 1       , 5
+    7        , 7       , 5
+    8        , 7       , 5
+    5        , 7       , 5
+    6        , 7       , 5
+    3        , 3       , 3
+
+
+
+
+#############################
+section Datalog и SQL-запросы
+#############################
+
+
+###############################################
+subsection 1. Информация о студентах
+              (StudentId, StudentName, GroupId)
+
+comment 1.1. По :StudentName
+
+set-var :StudentName = 'Петров П.П.'
+
+print-dl
+S(StudentId, StudentName, GroupId) :-
+  Students(StudentId, StudentName, GroupId), 
+  StudentName = :StudentName.
+
+print-sql
+select StudentId, StudentName, GroupId
+from Students
+where StudentName = :StudentName
+
+comment 1.2. По :GroupName
+
+set-var :GroupName = 'M3439'
+
+print-dl
+S(StudentId, StudentName, GroupId) :-
+  Students(StudentId, StudentName, GroupId), 
+  Groups(GroupId, :GroupName).
+
+print-sql
+select StudentId, StudentName, Students.GroupId
+from Students, Groups
+where Students.GroupId = Groups.GroupId and GroupName = :GroupName
+
+comment 1.3. По :Mark и :CourseName
+
+set-var :Mark = 5
+
+set-var :CourseName = 'Базы данных'
+
+print-dl
+S(StudentId, StudentName, GroupId) :-
+  Students(StudentId, StudentName, GroupId), 
+  Marks(StudentId, CourseId, :Mark),
+  Courses(CourseId, :CourseName).
+
+print-sql
+select distinct S.StudentId, StudentName, GroupId
+from Students S, Marks M, Courses C
+where S.StudentId = M.StudentId
+  and M.CourseId  = C.CourseId 
+  and CourseName  = :CourseName
+  and Mark        = :Mark
+
+#################################################
+subsection 2. Полная информация о студентах
+              (StudentId, StudentName, GroupName)
+
+comment 2.1. Всех
+
+print-dl
+S(StudentId, StudentName, GroupName) :-
+  Students(StudentId, StudentName, GroupId), 
+  Groups(GroupId, GroupName).
+
+print-sql
+select S.StudentId, StudentName, GroupName
+from Students S, Groups G
+where S.GroupId = G.GroupId
+
+comment 2.2. Не имеющих оценки по :CourseName
+
+set-var :CourseName = 'Базы данных'
+
+print-dl
+HaveMark(StudentId) :-
+  Marks(StudentId, CourseId, _),
+  Courses(CourseId, :CourseName).
+S(StudentId, StudentName, GroupName) :-
+  Students(StudentId, StudentName, GroupId), 
+  Groups(GroupId, GroupName),
+  not HaveMark(StudentId).
+
+print-sql
+select StudentId, StudentName, GroupName
+from Students S, Groups G
+where S.GroupId = G.GroupId and StudentId not in (
+  select StudentId
+  from Marks M, Courses C
+  where C.CourseName = :CourseName and C.CourseId = M.CourseId
+)
+
+comment 2.3. Не имеющих оценки по :CourseName, у которых есть этот предмет
+
+set-var :CourseName = 'ППО'
+
+print-dl
+HaveMark(StudentId) :-
+  Marks(StudentId, CourseId, _),
+  Courses(CourseId, :CourseName).
+HaveCourse(StudentId) :-
+  Courses(CourseId, :CourseName),
+  Students(StudentId, _, GroupId),
+  Plan(GroupId, CourseId, _).
+S(StudentId, StudentName, GroupName) :-
+  Students(StudentId, StudentName, GroupId), 
+  Groups(GroupId, GroupName),
+  HaveCourse(StudentId),
+  not HaveMark(StudentId).
+
+print-sql
+select StudentId, StudentName, GroupName
+from Students S, Groups G
+where S.GroupId  = G.GroupId 
+  and G.GroupId in (
+    select GroupId
+    from Plan P, Courses C
+    where C.CourseName = :CourseName and P.CourseId = C.CourseId
+) and StudentId not in (
+    select StudentId
+    from Marks M, Courses C
+    where C.CourseName = :CourseName and C.CourseId = M.CourseId
+)
+
+###################################################################
+subsection 3. Студенты и предметы, такие что у студента был предмет
+              (по плану или есть оценка)
+
+comment 3.1. (StudentId, CourseId)
+
+print-dl
+SC(StudentId, CourseId) :-
+  Marks(StudentId, CourseId, _).
+SC(StudentId, CourseId) :-
+  Plan(GroupId, CourseId, _),
+  Students(StudentId, _, GroupId).
+
+print-sql
+select StudentId, CourseId from Marks
+union
+select StudentId, CourseId from Plan P, Students S where S.GroupId = P.GroupId
+
+comment 3.2. (StudentName, CourseName)
+
+print-dl
+SC(StudentId, CourseId) :-
+  Marks(StudentId, CourseId, _).
+SC(StudentId, CourseId) :-
+  Plan(GroupId, CourseId, _),
+  Students(StudentId, _, GroupId).
+SCC(StudentName, CourseName)
+  SC(StudentId, CourseId),
+  Students(StudentId, StudentName, _),
+  Courses(CourseId, CourseName).
+
+print-sql
+select
+  (select StudentName from Students S where S.StudentId = Ids.StudentId) as StudentName,
+  (select CourseName  from Courses C  where C.CourseId  = Ids.CourseId)  as CourseName
+from (
+  select StudentId, CourseId from Marks
+  union
+  select StudentId, CourseId from Plan P, Students S where S.GroupId = P.GroupId
+) Ids
+
+#######################################################
+subsection 4. Идентификаторы студентов по :LecturerName
+              (StudentId)
+
+comment 4.1. Имеющих хотя бы одну оценку у преподавателя
+
+set-var :LecturerName = 'Корнеев Г.А.'
+
+print-dl
+S(StudentId) :-
+  Lecturers(LecturerId, :LecturerName),
+  Plan(GroupId, CourseId, LecturerId),
+  Students(StudentId, _, GroupId),
+  Marks(StudentId, CourseId, _).
+
+print-sql
+select distinct S.StudentId
+from Lecturers L, Plan P, Students S, Marks M
+where LecturerName = :LecturerName
+  and L.LecturerId = P.LecturerId
+  and P.GroupId    = S.GroupId
+  and M.StudentId  = S.StudentId
+  and M.CourseId   = P.CourseId
+
+comment 4.2. Не имеющих оценок у преподавателя
+
+print-dl
+HaveMark(StudentId) :-
+  Lecturers(LecturerId, :LecturerName),
+  Plan(GroupId, CourseId, LecturerId),
+  Students(StudentId, _, GroupId),
+  Marks(StudentId, CourseId, _).
+S(StudentId) :-
+  Students(StudentId, _, _),
+  not HaveMark(StudentId).
+
+print-sql
+select StudentId
+from Students
+where StudentId not in (
+  select S.StudentId
+  from Lecturers L, Plan P, Students S, Marks M
+  where LecturerName = :LecturerName
+    and L.LecturerId = P.LecturerId
+    and P.GroupId    = S.GroupId
+    and M.StudentId  = S.StudentId
+    and M.CourseId   = P.CourseId
+)
+
+comment 4.3. Имеющие оценки по всем предметам преподавателя
+
+print-dl
+Teaching(CourseId) :-
+  Lecturers(LecturerId, :LecturerName),
+  Plan(_, CourseId, LecturerId).
+HaveMark(StudentId, CourseId) :-
+  Teaching(CourseId),
+  Marks(StudentId, CourseId, _).
+NotHaveMark(StudentId) :-
+  Students(StudentId, _, _),
+  Teaching(CourseId),
+  not HaveMark(StudentId, CourseId).
+S(StudentId) :-
+  Students(StudentId, _, _),
+  not NotHaveMark(StudentId).
+
+print-sql
+select StudentId
+from Students
+where StudentId not in (
+  select StudentId
+  from Students S, Lecturers L, Plan P
+  where not exists (
+    select StudentId, CourseId
+    from Marks M
+    where S.StudentId = M.StudentId and P.CourseId = M.CourseId
+  ) and L.LecturerId = P.LecturerId and LecturerName = :LecturerName
+)
+
+comment 4.4. Имеющие оценки по всем предметам преподавателя, которые он у них вёл
+
+print-dl
+Teaching(GroupId, CourseId) :-
+  Lecturers(LecturerId, :LecturerName),
+  Plan(GroupId, CourseId, LecturerId).
+HaveMark(StudentId, CourseId) :-
+  Teaching(_, CourseId),
+  Marks(StudentId, CourseId, _).
+NotHaveMark(StudentId) :-
+  Students(StudentId, _, GroupId),
+  Teaching(GroupId, CourseId),
+  not HaveMark(StudentId, CourseId).
+S(StudentId) :-
+  Students(StudentId, _, _),
+  not NotHaveMark(StudentId).
+
+print-sql
+select StudentId
+from Students
+where StudentId not in (
+  select StudentId
+  from Students S, Lecturers L, Plan P
+  where not exists (
+    select StudentId, CourseId
+    from Marks M
+    where S.StudentId = M.StudentId and P.CourseId = M.CourseId and S.GroupId = P.GroupId
+  ) and L.LecturerId = P.LecturerId and LecturerName = :LecturerName
+)
+
+############################################################################
+subsection 5. Группы и предметы, такие что все студенты группы сдали предмет
+
+comment 5.1. (GroupId, CourseId)
+
+print-dl
+Passed(StudentId, CourseId) :-
+  Marks(StudentId, CourseId, Mark),
+  Mark >= 3.
+NotPassed(GroupId, CourseId) :-
+  Students(StudentId, _, GroupId),
+  Courses(CourseId, _),
+  not Passed(StudentId, CourseId).
+GC(GroupId, CourseId) :-
+  Groups(GroupId, _),
+  Courses(CourseId, _),
+  not NotPassed(GroupId, CourseId).
+
+print-sql
+select GroupId, CourseId
+from Groups G1, Courses C1
+where not exists (
+  select GroupId, CourseId
+  from Students S, Courses C2
+  where G1.GroupId = S.GroupId and C2.CourseId = C1.CourseId and not exists (
+    select StudentId, CourseId
+    from Marks M
+    where S.StudentId = M.StudentId and C2.CourseId = M.CourseId and Mark >= 3
+  )
+)
+
+print-sql
+select GroupId, CourseId
+from Students S, Courses C
+where 3 <= any (
+  select Mark
+  from Marks M
+  where S.StudentId = M.StudentId and C.CourseId = M.CourseId and Mark >= 3
+)
+
+select StudentId, CourseId from Marks
+
+comment 5.2. (GroupName, CourseName)
+
+print-dl
+Passed(StudentId, CourseId) :-
+  Marks(StudentId, CourseId, Mark),
+  Mark >= 3.
+NotPassed(GroupId, CourseId) :-
+  Students(StudentId, _, GroupId),
+  Courses(CourseId, _),
+  not Passed(StudentId, CourseId).
+GC(GroupName, CourseName) :-
+  Groups(GroupId, GroupName),
+  Courses(CourseId, CourseName),
+  not NotPassed(GroupId, CourseId).

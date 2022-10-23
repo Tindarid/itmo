@@ -1,0 +1,7 @@
+pi{TeamName} (
+  Teams njoin (
+    pi{ContestId, TeamId} (Teams njoin Contests)
+    diff
+    (pi{ContestId, TeamId} (sigma{Accepted = 1} (Sessions njoin Runs)))
+  )
+)

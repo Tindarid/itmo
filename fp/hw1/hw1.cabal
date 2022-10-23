@@ -1,0 +1,43 @@
+name:                hw1
+version:             0.1.0.0
+synopsis:            Synopsis for task 1
+description:         Task 1 for FP ITMO course
+
+homepage:            https://github.com/Tindarid/fp-homework/tree/master/hw1#readme
+license:             MIT
+license-file:        LICENSE
+author:              Nursan Valeyev
+maintainer:          tindarid@gmail.com
+copyright:           2020 Nursan Valeyev
+
+category:            Web
+build-type:          Simple
+extra-source-files:  README.md
+cabal-version:       >=1.10
+tested-with:         GHC == 8.0.1
+
+library
+  hs-source-dirs:      src
+  exposed-modules:     Algebraic.Week Algebraic.Nat Algebraic.Tree
+                       Folding.Tree Folding.SplitJoin
+                       Monoids.Concat Monoids.Semigroup
+                       Functors.Tree Functors.NonEmpty
+                       Parsers.Combinator
+  ghc-options:         -Wall
+  build-depends:       base >= 4.9 && < 5
+  default-language:    Haskell2010
+
+test-suite hw1-test
+  type:                exitcode-stdio-1.0
+  hs-source-dirs:      test
+  main-is:             Spec.hs
+  build-depends:       base >= 4.9 && < 5
+                     , hw1
+                     , hspec >= 1.3
+                     , hspec-discover
+                     , QuickCheck
+  ghc-options:         -Wall -Werror
+  other-modules:       AlgebraicSpec
+                       FoldingSpec
+                       MonoidsSpec
+  default-language:    Haskell2010

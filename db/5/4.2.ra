@@ -1,0 +1,1 @@
+pi{StudentId, StudentName, GroupId} (sigma {Mark = null} ((Students njoin (Plan njoin sigma{CourseName = :CourseName} (Courses))) ljoin Marks))

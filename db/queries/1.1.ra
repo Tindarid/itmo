@@ -1,0 +1,2 @@
+pi {RunId, SessionId, Letter, SubmitTime, Accepted}
+((sigma{TeamId = :TeamId && ContestId = :ContestId} (Sessions)) njoin Runs njoin Problems)

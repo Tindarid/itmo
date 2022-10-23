@@ -1,0 +1,1 @@
+Students ∖ (Students njoin (pi {StudentId} (sigma{CourseName = :CourseName} (Marks njoin Courses))))

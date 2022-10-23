@@ -1,0 +1,1 @@
+(pi {SessionId, ContestId, Letter} (sigma{Accepted = 1}(Problems njoin Runs))) div (pi {ContestId, Letter} (Problems))

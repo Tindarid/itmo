@@ -1,0 +1,9 @@
+SC(StudentId, CourseId) :-
+  Marks(StudentId, CourseId, _).
+SC(StudentId, CourseId) :-
+  Plan(GroupId, CourseId, _),
+  Students(StudentId, _, GroupId).
+SCN(StudentName, CourseName) :-
+  SC(StudentId, CourseId),
+  Students(StudentId, StudentName, _),
+  Courses(CourseId, CourseName).
