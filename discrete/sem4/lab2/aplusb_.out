@@ -1,0 +1,105 @@
+start: s
+accept: ac
+reject: rj
+blank: _
+s 1 -> ss1 1 <
+s 0 -> ss1 0 <
+ss1 _ -> sp1 = ^
+
+sp1 1 -> sp1 1 >
+sp1 0 -> sp1 0 >
+sp1 = -> sp2 = >
+sp2 A -> sp3 A >
+sp2 1 -> sp5 1 >
+sp2 0 -> sp5 0 >
+sp3 A -> sp3 A >
+sp3 + -> sp4 + >
+sp4 _ -> sv1 _ <
+sp4 1 -> sp5 1 >
+sp4 0 -> sp5 0 >
+sp5 A -> sp5 A >
+sp5 0 -> sp5 0 >
+sp5 1 -> sp5 1 >
+sp5 + -> sp5 + >
+sp5 _ -> ss2 _ <
+
+sp6 1 -> sp6 1 >
+sp6 0 -> sp6 0 >
+sp6 = -> sp7 = >
+sp7 A -> sp8 A >
+sp7 1 -> sp10 1 >
+sp7 0 -> sp10 0 >
+sp8 A -> sp8 A >
+sp8 + -> sp9 + >
+sp9 _ -> sv3 _ <
+sp9 1 -> sp10 1 >
+sp9 0 -> sp10 0 >
+sp10 A -> sp10 A >
+sp10 0 -> sp10 0 >
+sp10 1 -> sp10 1 >
+sp10 + -> sp10 + >
+sp10 _ -> ss10 _ <
+
+sv1 A -> sv1 _ <
+sv1 + -> sv1 _ <
+sv1 _ -> sv1 _ <
+sv1 = -> sv2 _ <
+sv2 1 -> sv2 1 <
+sv2 0 -> sv2 0 <
+sv2 _ -> ac _ >
+
+sv3 A -> sv3 _ <
+sv3 + -> sv3 _ <
+sv3 _ -> sv3 _ <
+sv3 = -> sv4 _ <
+sv4 1 -> sv4 1 <
+sv4 0 -> sv4 0 <
+sv4 _ -> ac 1 ^
+
+ss2 1 -> ss3 _ <
+ss2 0 -> ss4 _ <
+ss2 + -> ss4 + ^
+ss3 1 -> ss3 1 <
+ss3 0 -> ss3 0 <
+ss4 1 -> ss4 1 <
+ss4 0 -> ss4 0 <
+ss3 + -> ss5 + <
+ss4 + -> ss6 + <
+ss5 A -> ss5 A <
+ss6 A -> ss6 A <
+ss5 1 -> ss7 A <
+ss5 0 -> ss8 A <
+ss5 = -> ss8 = <
+ss6 1 -> ss8 A <
+ss6 0 -> ss9 A <
+ss6 = -> ss9 = <
+ss7 _ -> sp6 0 >
+ss8 _ -> sp1 1 >
+ss9 _ -> sp1 0 >
+ss7 A -> ss7 A <
+ss7 = -> ss7 = <
+ss7 1 -> ss7 1 <
+ss7 0 -> ss7 0 <
+ss8 A -> ss8 A <
+ss8 = -> ss8 = <
+ss8 1 -> ss8 1 <
+ss8 0 -> ss8 0 <
+ss9 A -> ss9 A <
+ss9 = -> ss9 = <
+ss9 1 -> ss9 1 <
+ss9 0 -> ss9 0 <
+ss10 0 -> ss3 _ <
+ss10 + -> ss3 + ^
+ss10 1 -> ss11 _ <
+ss11 1 -> ss11 1 <
+ss11 0 -> ss11 0 <
+ss11 + -> ss12 + <
+ss12 A -> ss12 A <
+ss12 = -> ss7 = <
+ss12 0 -> ss7 A <
+ss12 1 -> ss13 A <
+ss13 A -> ss13 A <
+ss13 = -> ss13 = <
+ss13 1 -> ss13 1 <
+ss13 0 -> ss13 0 <
+ss13 _ -> sp6 1 >

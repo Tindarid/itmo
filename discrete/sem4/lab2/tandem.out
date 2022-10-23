@@ -1,0 +1,47 @@
+start: s
+accept: ac
+reject: rj
+blank: _
+s 1 -> s1 A >
+s 0 -> s1 B >
+s C -> c C <
+s D -> c D <
+s _ -> ac _ ^
+c _ -> d _ >
+c A -> c A <
+c B -> c B <
+s1 _ -> a _ <
+s1 C -> a C <
+s1 D -> a D <
+s1 1 -> s1 1 >
+s1 0 -> s1 0 >
+a 1 -> b C <
+a 0 -> b D <
+a A -> rj A ^
+a B -> rj B ^
+b A -> s A >
+b B -> s B >
+b 1 -> b 1 <
+b 0 -> b 0 <
+d _ -> ac _ ^
+d P -> ac P ^
+d A -> e _ >
+d B -> g _ >
+e A -> e A >
+e B -> e B >
+e P -> e P >
+g A -> g A >
+g B -> g B >
+g P -> g P >
+e C -> f P <
+e D -> rj D ^
+g D -> h P <
+g C -> rj C ^
+f P -> f P <
+f A -> f A <
+f B -> f B <
+h P -> h P <
+h A -> h A <
+h B -> h B <
+f _ -> d _ >
+h _ -> d _ >
