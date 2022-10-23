@@ -1,0 +1,63 @@
+Nursan Valeyev
+ProcessLamportMutex
+#actions
+{1 SEND 2} 2, REQ, 1
+{2 SEND 1} 4, OK
+{2 SEND 1} 2, REQ, 1
+{1 SEND 2} 8, OK
+{1 SEND 2} 6, REL
+{1 SEND 2} 10, REQ, 9
+{2 SEND 1} 13, OK
+{2 SEND 1} 15, REQ, 14
+{1 SEND 2} 17, OK
+{2 SEND 1} 11, REL
+{1 SEND 2} 20, REQ, 19
+{1 SEND 2} 18, REL
+{2 SEND 1} 22, OK
+#process 1
+0 LockRequest
+40 {1 SEND 2} 2, REQ, 1
+160 {1 RCVD 2} 4, OK
+200 Lock
+240 Unlock
+280 {1 SEND 2} 6, REL
+320 {1 RCVD 2} 2, REQ, 1
+360 {1 SEND 2} 8, OK
+400 LockRequest
+440 {1 SEND 2} 10, REQ, 9
+680 {1 RCVD 2} 13, OK
+760 {1 RCVD 2} 15, REQ, 14
+800 {1 SEND 2} 17, OK
+840 Lock
+880 Unlock
+920 {1 SEND 2} 18, REL
+960 LockRequest
+1000 {1 SEND 2} 20, REQ, 19
+1040 {1 RCVD 2} 11, REL
+1091 {1 RCVD 2} 22, OK
+1104 Lock
+1200 Unlock
+1240 {1 SEND 2} 24, REL
+#process 2
+0 LockRequest
+40 {2 SEND 1} 2, REQ, 1
+80 {2 RCVD 1} 2, REQ, 1
+120 {2 SEND 1} 4, OK
+400 {2 RCVD 1} 8, OK
+440 {2 RCVD 1} 6, REL
+480 Lock
+520 Unlock
+560 {2 SEND 1} 11, REL
+600 {2 RCVD 1} 10, REQ, 9
+640 {2 SEND 1} 13, OK
+680 LockRequest
+720 {2 SEND 1} 15, REQ, 14
+840 {2 RCVD 1} 17, OK
+1040 {2 RCVD 1} 20, REQ, 19
+1080 {2 SEND 1} 22, OK
+1120 Lock
+1179 Unlock
+1200 {2 SEND 1} 23, REL
+1240 {2 RCVD 1} 18, REL
+1280 LockRequest
+1320 {2 SEND 1} 26, REQ, 25
